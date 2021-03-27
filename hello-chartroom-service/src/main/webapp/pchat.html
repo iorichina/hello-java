@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- <base href="http://ali142.looyu.com:80/chat/"> -->
+    
+    <title>XX电脑城服务台</title>
+
+    <link rel="stylesheet" type="text/css" href="assets/css/default3.css?1403141"/>
+
+    <script type="text/javascript">
+    var basePath = '/',
+        conf = {};
+    </script>
+    
+</head>
+<body class="s4 lic2 lg-sc ">
+<div class="header" id="header">
+    <div class="logo " id="logo"></div>
+
+    <a href="#" class="btn btn-exit" onclick="exit();return false;"></a>
+    <ul class="nav">
+        <li class="active">
+            <div class="tab-right"></div>
+            <div class="tab-left"></div>
+            <div class="tab-body"><span id="vr_tabOnline">我要咨询</span></div>
+        </li>
+        
+        <li>
+            <div class="tab-right"></div>
+            <div class="tab-left"></div>
+            <div class="tab-body" onclick="$.goTab('leaveMessage')"><span
+                    id="vr_tabLeaveMsg">我要留言</span></div>
+        </li>
+        
+        
+        
+    </ul>
+    
+</div>
+
+<div class="neck"></div>
+<div class="card" id="descInfo">
+    <div class="inner" id="card">
+
+    </div>
+</div>
+<div class="stage" id="stage">
+    
+    <div class="inner">
+        <div class="func scroll" id="chatDiv"></div>
+        <div class="func" id="fileDiv">
+            <iframe height="0" width="0" style="display: none;" src="about:blank" name="upload"></iframe>
+            <div id="fileSending">
+                <a class="btn btn-normal"><span id="vr_cancel">取消</span></a>
+            </div>
+            <form target="upload" enctype="multipart/form-data" method="post" action="receive.jsp" name="uploadForm">
+                <div class="uploadFile">
+                    <span class="fl" id="vr_sendFile">传送文件</span>
+                    <input class="fl" id="filePath" type="text">
+                    <a href="javascript:void(0)" class="btn btn-normal btn-browser">
+                        <div>浏览<input type="file"
+                                                                    onchange="$('filePath').value = this.value"
+                                                                    name="file" class="input-browser" size="1"/></div>
+                    </a>
+                    <a href="#" onclick="sendFile();return false;" class="btn btn-normal"><span
+                            id="vr_send">发送</span></a>
+
+                    <div class="tip clear">
+                        <span class="tip" id="vr_tip">提示：</span>
+                        <span class="tipText" id="vr_fileType">所支持的文件类型：.txt;.jpg;.rm;.doc;.pdf;.ppt;.xls;.gif;.rar;.zip;.pps</span>
+                        <span class="tipText" id="vr_fileSize">所允许传送的最大文件大小是1MB;</span>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+        <div class="func" id="emotDiv"></div>
+        <div class="func" id="hotMsgDiv"></div>
+    </div>
+    
+</div>
+
+<div class="tool" id="tool">
+    <div class="inner">
+        <ul class="fr" style="margin-right:20px">
+            <li><a href="#" onclick="showHotQ();return false;" class="btn btn-hotq" id="hotq"></a></li>
+
+        </ul>
+        <ul>
+            <li><a href="#" onclick="showEmot();return false;" class="btn btn-icon btn-emot" id="emot"></a></li>
+            <li><a href="#" onclick="showDiv('fileDiv');return false;" class="btn btn-icon btn-file" id="sendFile"></a>
+            </li>
+            <li><a href="#" onclick="startScreenShot();return false;" class="btn btn-icon btn-screen" id="screen"></a>
+            </li>
+            <li><a href="#" onclick="showLang();return false;" class="btn btn-icon btn-lang" id="langSel"></a></li>
+            <li><a href="#" onclick="openOpinion();return false;" class="btn btn-icon btn-opinion" id="opinionTip"></a>
+            </li>
+            
+        </ul>
+
+    </div>
+</div>
+<div class="inputer" id="inputer">
+    
+    <div class="inner">
+        <ul>
+            <li><a href="#" onclick="sendMessage();return false;" class="btn btn-icon btn-send"></a></li>
+            <li><a href="#" onclick="showHotKey();return false;" class="btn btn-icon btn-key"></a></li>
+        </ul>
+        <div><textarea id="message" cols="30" rows="5"></textarea></div>
+    </div>
+    
+</div>
+
+<div class="ad1" id="ad1"></div>
+<div class="footer">
+    <a class="license" href="http://www.looyu.com" target="_blank"></a>
+    <span id='vr_inputing'>对方正在输入信息</span>
+</div>
+
+<div id="opinionWin" style="display:none">
+    <form name="opinionForm">
+        <table cellpadding="3" cellspacing="0" width="100%">
+            <tr class="subhead">
+                <td colspan="2"><span id="vr_satisfied">您是否对此次服务满意？</span></td>
+            </tr>
+            <tr>
+                <td class="label"><span id="vr_opinion">评价：</span></td>
+                <td><span class="opinion-item"><input type="radio" class="radio" name="opinion" value="4" checked onclick="radioClick(this)"><span
+                        id="vr_verygood">非常满意</span></span>
+                    <span class="opinion-item"><input type="radio" class="radio" name="opinion" value="3" onclick="radioClick(this)"><span
+                            id="vr_good">满意</span></span>
+                    <span class="opinion-item"><input type="radio" class="radio" name="opinion" value="2" onclick="radioClick(this)"><span
+                            id="vr_normal">一般</span></span>
+                    <span class="opinion-item"><input type="radio" class="radio" name="opinion" value="1" onclick="radioClick(this)"><span
+                            id="vr_bad">不满意</span></span>
+                    <span class="opinion-item"><input type="radio" class="radio" name="opinion" value="-1" onclick="radioClick(this)"><span
+                            id="vr_verybad">很差</span></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="label"><span id="vr_desc"> 描述：</span></td>
+                <td><textarea rows="4" style="width: 80%" name="description"></textarea><span class="required" id="descRequired"
+                                                                                     style="display:none">*</span></td>
+            </tr>
+
+        </table>
+    </form>
+</div>
+<script type="text/javascript" src="http://static.doyoo.net/cfile/140314/lang/sc.js?140314"></script>
+<script type="text/javascript" src="http://static.doyoo.net/cfile/140314/scripts/util1.js?1403141"></script>
+<script type="text/javascript" src="http://static.doyoo.net/cfile/140314/scripts/chat.js?140402"></script>
+
+
+
+
+
+
+
+</body>
+</html>

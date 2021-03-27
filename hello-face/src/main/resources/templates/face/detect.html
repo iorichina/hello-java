@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>换套衣服</title>
+</head>
+<body>
+<form id="uface">
+    <input type="file" name="files" id="upload">
+    <button type="button" onClick="uploadImg()">submit</button>
+</form>
+<canvas id="canvas" width="446" height="694"></canvas>
+<div style="display: none">
+    <img src="/hello/face/public/img/nanchang1-m-t.png" id="jz">
+    <img src="" id="target" style="max-width: 200px;">
+</div>
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script data-th-inline="javascript">
+    /*<![CDATA[*/
+    var from = [[${from}]];
+    var url_detect = [[@{/hello/face/api/face/detect(from=${from})}]];
+    /*]]>*/
+</script>
+<script>
+    function uploadImg() {
+        var formData = new FormData();
+        formData.append("file", $("#upload")[0].files[0]);
+        $.ajax({
+            type: 'POST',
+            url: url_detect,
+            data: formData,
+            processData: false,
+            contentType: false,
+            dataType:"json",
+            success: function(json) {
+                console.log(url_detect, json);
+                // var json = JSON.parse(res);
+                if (json.code != 0){
+                    alert(json.msg);
+                    return;
+                }
+                createFace(json);
+                //从后端获取到人脸检测到结果后，调用createFace函数，进行图片合成
+            },
+            beforeSend: function() {
+
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var data = e.target.result; // 'data:image/jpeg;base64,/9j/4AAQSk...(base64编码)...'
+                    $('#target').attr("src", data);
+                };
+                // 以DataURL的形式读取文件:
+                reader.readAsDataURL($('#upload')[0].files[0]);
+
+            }
+        });
+    };
+
+    function createFace(json) {
+        var jzimg = $('#jz')[0];
+        var img = $('#target')[0];
+        var canvas = $('#canvas')[0];
+        var ctx = canvas.getContext('2d');
+
+        var sx = json.data.left,
+            sy = json.data.top,
+            swidth = json.data.width,
+            sheight = json.data.height;
+
+        ctx.drawImage(img, sx, sy, swidth, sheight, 169, 173, 121, 113);
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.drawImage(jzimg, 0, 0);
+
+        //globalCompositeOperation = 'source-over';
+        // 这个是用来把抠出来到人脸，合成到军装里到关键设置，
+        // 可以合成任意到图片，并保留图片到透明信息哦。
+        // 相当于ps里的图层叠加概念
+
+    };
+</script>
+</body>
+</html>

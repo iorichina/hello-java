@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Java Web Socket</title>
+</head>
+<body>
+<script>
+var id = parseInt(Math.random()*100);
+var ws = new WebSocket("ws://chatroom.iorichina.cc:8080/websocket/chat?id="+id);
+ws.onopen = function(){
+	//document.getElementById("chatlog").textContent = "***["+id+"]Connecting to Server***" + "\n";
+};
+ws.onclose = function(){
+	document.getElementById("chatlog").textContent += "***OUT["+id+"]***" + "\n";
+};
+
+// 异常  
+ws.onerror = function (event) {  
+	document.getElementById("chatlog").textContent += "***Error occur***" + "\n";
+    console.log(event);  
+};  
+
+ws.onmessage = function(message){
+	console.log(message);
+	var rs = "";
+	try {
+		var msg = JSON.parse(message.data);
+		rs = "["+msg.from+"] ";
+		rs += msg.message;
+	}catch(e){
+		console.log(e);
+		rs = message.data;
+	}
+	document.getElementById("chatlog").textContent += rs + "\n";
+};
+
+function postToServer() {
+	document.getElementById("chatlog").textContent += "*["+id+"] "+document.getElementById("msg").value + "\n";
+	ws.send(document.getElementById("msg").value);
+	document.getElementById("msg").value = "";
+}
+
+function closeConnect() {
+	//ws.close();
+}
+</script>
+
+<div>
+	<textarea rows="10" cols="100" id="chatlog" readonly="readonly"></textarea>
+</div>
+<div>
+	<input id="msg" type="text" onkeydown="if(event.keyCode == 13){document.getElementById('send').click();}" />
+	<button type="submit" onclick="postToServer()" id="send">Send</button>
+</div>
+</body>
+</html>

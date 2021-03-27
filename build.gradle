@@ -1,0 +1,119 @@
+
+buildscript {
+    repositories {
+        maven {
+            url "${mavenUrl}"
+        }
+        //jcenter()
+    }
+
+}
+
+allprojects {
+    apply {
+        plugin 'idea'
+        plugin 'eclipse'
+        plugin 'java'
+        plugin 'maven'
+    }
+
+    [compileJava, compileTestJava]*.options*.encoding = "UTF-8"
+    project.sourceCompatibility = 1.8
+    project.targetCompatibility = 1.8
+
+}
+
+subprojects {
+    group 'iorichina.hellojava'
+    version '1.0-SNAPSHOT'
+
+//    sourceSets.main.java.srcDirs += ["src/gen/java"]
+
+    gradle.projectsEvaluated {
+        tasks.withType(JavaCompile) {
+            options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+        }
+    }
+
+    repositories {
+        maven {
+            url "${mavenUrl}"
+        }
+        //jcenter()
+
+        //本地依赖包路径
+        //flatDir {
+        //    dirs '../../../../main/libs'
+        //}
+        //从中央库里面获取依赖
+        //mavenCentral()
+        //或者使用指定的本地maven 库
+        //maven{
+        //    url "file://F:/githubrepo/releases"
+        //}
+        //或者使用指定的远程maven库
+        //maven{
+        //    url "https://github.com/youxiachai/youxiachai-mvn-repo/raw/master/releases"
+        //}
+
+        mavenCentral()
+    }
+
+    configurations {
+        provided
+        compile.extendsFrom provided
+        //all*.exclude group: 'com.google.collections', module: 'google-collections'
+//        all*.exclude group: 'log4j', module: 'log4j'
+//        all*.exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+//        all*.exclude group: 'org.slf4j', module: 'slf4j-simple'
+        //all*.exclude module: 'javax.servlet'
+    }
+
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
+
+    artifacts {
+        archives sourcesJar
+    }
+
+    //jar.exclude '*.conf'
+    //jar.exclude 'spring-logback.xml'
+
+    dependencies {
+        //exclude something from any group
+        //compile (project(':CommonSDK')) { exclude group: "com.android.support" }
+        //单文件依赖
+        //compile files('libs/android-support-v4.jar')
+        //某个文件夹下面全部依赖
+        //compile fileTree(dir: 'src/android6/libs', include: ['*.jar'])
+
+        testCompile group: 'junit', name: 'junit', version: '4.12'
+    }
+
+    processResources << {
+        try {
+            file("$destinationDir/version.properties").text = 'version=' + "git rev-parse --short HEAD".execute().text.trim()
+        } catch (Exception e) {
+            println("get version from git fail")
+        }
+    }
+
+    eclipse {
+        classpath {
+            containers.remove('org.eclipse.jdt.launching.JRE_CONTAINER')
+            containers 'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8'
+        }
+    }
+
+    task copyLib(type: Sync, dependsOn: jar) {
+        from configurations.compile
+        from jar.archivePath
+        into 'build/deploy'
+    }
+
+    task deploy(dependsOn: copyLib) {
+        println jar.archivePath
+    }
+}

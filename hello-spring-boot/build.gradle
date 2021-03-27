@@ -1,0 +1,45 @@
+println "${mavenUrl}"
+buildscript {
+    repositories {
+        maven {
+            url "${mavenUrl}"
+        }
+//        mavenCentral()
+//        jcenter()
+    }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+    }
+}
+
+apply {
+    plugin 'org.springframework.boot'
+}
+
+jar {
+    baseName = 'hello-spring-boot'
+    version = '0.0.1-SNAPSHOT'
+}
+
+dependencies {
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter'
+
+    compile("org.springframework.boot:spring-boot-starter-web") {
+        exclude module: "spring-boot-starter-tomcat"
+    }
+
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-jetty'
+
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-cache'
+
+    compile group: 'com.alibaba', name: 'fastjson', version: '1.2.33'
+
+    compile 'com.github.ben-manes.caffeine:caffeine'
+
+    // 编译hello-utils目录下的hello-utils模块
+    compile project(':hello-utils')
+
+    // include junit
+    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+
+}
