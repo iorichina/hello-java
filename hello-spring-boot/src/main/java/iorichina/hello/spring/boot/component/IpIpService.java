@@ -1,6 +1,6 @@
 package iorichina.hello.spring.boot.component;
 
-import com.iorichina.utils.geo.IPExt;
+import iorichina.hellojava.helloutils.geo.IPExt;
 import iorichina.hello.spring.boot.constant.RetEnum;
 import iorichina.hello.spring.boot.dto.IpIpFindDTO;
 import iorichina.hello.spring.boot.exception.IpIpException;

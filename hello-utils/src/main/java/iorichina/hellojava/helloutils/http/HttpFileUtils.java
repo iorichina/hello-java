@@ -1,4 +1,4 @@
-package com.iorichina.utils.http;
+package iorichina.hellojava.helloutils.http;
 
 import java.io.File;
 import java.io.FileOutputStream;

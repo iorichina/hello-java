@@ -1,4 +1,4 @@
-package com.iorichina.utils.http;
+package iorichina.hellojava.helloutils.http;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,4 +1,4 @@
-package com.iorichina.utils.cipher;
+package iorichina.hellojava.helloutils.cipher;
 
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;

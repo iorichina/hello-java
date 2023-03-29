@@ -1,4 +1,4 @@
-package com.iorichina.utils.geo;
+package iorichina.hellojava.helloutils.geo;
 
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Slf4jReporter;
@@ -186,7 +186,7 @@ public class IPExt {
 
     private static byte[] getBytesByFile(File file) {
         FileInputStream fin = null;
-        byte[] bs = new byte[new Long(file.length()).intValue()];
+        byte[] bs = new byte[Long.valueOf(file.length()).intValue()];
         try {
             fin = new FileInputStream(file);
             int readBytesLength = 0;

@@ -18,9 +18,9 @@ allprojects {
     }
 
     [compileJava, compileTestJava]*.options*.encoding = "UTF-8"
-    project.sourceCompatibility = 1.8
-    project.targetCompatibility = 1.8
-
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+    }
 }
 
 subprojects {
@@ -89,16 +89,16 @@ subprojects {
         //某个文件夹下面全部依赖
         //compile fileTree(dir: 'src/android6/libs', include: ['*.jar'])
 
-        testCompile group: 'junit', name: 'junit', version: '4.12'
+        testImplementation group: 'junit', name: 'junit', version: '4.12'
     }
 
-    processResources << {
+    /*processResources << {
         try {
             file("$destinationDir/version.properties").text = 'version=' + "git rev-parse --short HEAD".execute().text.trim()
         } catch (Exception e) {
             println("get version from git fail")
         }
-    }
+    }*/
 
     eclipse {
         classpath {

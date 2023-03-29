@@ -1,4 +1,4 @@
-package com.iorichina.utils.geo;
+package iorichina.hellojava.helloutils.geo;
 
 /**
  * 校验geo信息

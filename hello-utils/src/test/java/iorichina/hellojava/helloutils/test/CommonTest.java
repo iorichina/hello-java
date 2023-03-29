@@ -1,4 +1,4 @@
-package com.iorichina.utils.test;
+package iorichina.hellojava.helloutils.test;
 
 /**
  * Created by iorihuang on 2017/3/9.

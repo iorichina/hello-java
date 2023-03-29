@@ -1,4 +1,4 @@
-package com.iorichina.utils.time;
+package iorichina.hellojava.helloutils.time;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
