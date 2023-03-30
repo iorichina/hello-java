@@ -7,6 +7,7 @@ import java.util.Enumeration;
 
 public class Main {
     public static void main(String[] args) {
+        System.out.println(null instanceof Main);
         try {
             String ip = "39.156.66.10";
             System.out.println("ip:" + ip);
