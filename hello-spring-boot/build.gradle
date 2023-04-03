@@ -22,24 +22,28 @@ jar {
 
 dependencies {
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter'
-
     implementation("org.springframework.boot:spring-boot-starter-web") {
         exclude module: "spring-boot-starter-tomcat"
     }
-
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-jetty'
-
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-cache'
 
     implementation group: 'io.netty', name: 'netty-all', version: '4.1.11.Final'
+    implementation group: 'org.apache.thrift', name: 'libthrift', version: '0.9.3'
+    // https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java
+    implementation group: 'com.google.protobuf', name: 'protobuf-java', version: '3.8.0'
+    // https://mvnrepository.com/artifact/com.googlecode.protobuf-java-format/protobuf-java-format
+    implementation group: 'com.googlecode.protobuf-java-format', name: 'protobuf-java-format', version: '1.4'
 
     implementation 'com.github.ben-manes.caffeine:caffeine'
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
+    implementation 'org.projectlombok:lombok:1.18.8'
 
     // 编译hello-utils目录下的hello-utils模块
     implementation project(':hello-utils')
 
     // include junit
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+    testImplementation "org.projectlombok:lombok:1.18.8"
 
 }

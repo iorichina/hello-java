@@ -1,7 +1,7 @@
 package iorichina.hellojava.hellospringboot.dto;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
+import com.fasterxml.jackson.databind.JsonNode;
+import iorichina.hellojava.hellospringboot.util.JsonUtils;
 
 /**
  * Created by iorihuang on 2017/1/7.
@@ -43,25 +43,25 @@ public class IpIpFindDataDTO {
     }
 
     public static IpIpFindDataDTO valueOf(String data) {
-        JSONArray jsonArray = JSON.parseArray(data);
+        JsonNode jsonArray = JsonUtils.parseObject(data);
         if (null == jsonArray) {
             return null;
         }
 
         IpIpFindDataDTO ipIpFindDataDTO = new IpIpFindDataDTO();
-        ipIpFindDataDTO.setCountry(jsonArray.getString(0));
-        ipIpFindDataDTO.setProvince(jsonArray.getString(1));
-        ipIpFindDataDTO.setCity(jsonArray.getString(2));
-        ipIpFindDataDTO.setCom(jsonArray.getString(3));
-        ipIpFindDataDTO.setIsp(jsonArray.getString(4));
-        ipIpFindDataDTO.setLatitude(jsonArray.getDouble(5));
-        ipIpFindDataDTO.setLongitude(jsonArray.getDouble(6));
-        ipIpFindDataDTO.setAreaZone(jsonArray.getString(7));
-        ipIpFindDataDTO.setTimeZone(jsonArray.getString(8));
-        ipIpFindDataDTO.setCityCode(jsonArray.getString(9));
-        ipIpFindDataDTO.setInternationalTelCode(jsonArray.getString(10));
-        ipIpFindDataDTO.setCountryCode(jsonArray.getString(11));
-        ipIpFindDataDTO.setContinentCode(jsonArray.getString(12));
+        ipIpFindDataDTO.setCountry(jsonArray.get(0).textValue());
+        ipIpFindDataDTO.setProvince(jsonArray.get(1).textValue());
+        ipIpFindDataDTO.setCity(jsonArray.get(2).textValue());
+        ipIpFindDataDTO.setCom(jsonArray.get(3).textValue());
+        ipIpFindDataDTO.setIsp(jsonArray.get(4).textValue());
+        ipIpFindDataDTO.setLatitude(jsonArray.get(5).doubleValue());
+        ipIpFindDataDTO.setLongitude(jsonArray.get(6).doubleValue());
+        ipIpFindDataDTO.setAreaZone(jsonArray.get(7).textValue());
+        ipIpFindDataDTO.setTimeZone(jsonArray.get(8).textValue());
+        ipIpFindDataDTO.setCityCode(jsonArray.get(9).textValue());
+        ipIpFindDataDTO.setInternationalTelCode(jsonArray.get(10).textValue());
+        ipIpFindDataDTO.setCountryCode(jsonArray.get(11).textValue());
+        ipIpFindDataDTO.setContinentCode(jsonArray.get(12).textValue());
 
         return ipIpFindDataDTO;
     }

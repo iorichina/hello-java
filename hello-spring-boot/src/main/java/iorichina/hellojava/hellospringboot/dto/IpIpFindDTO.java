@@ -1,7 +1,7 @@
 package iorichina.hellojava.hellospringboot.dto;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.databind.JsonNode;
+import iorichina.hellojava.hellospringboot.util.JsonUtils;
 
 /**
  * Created by iorihuang on 2017/1/7.
@@ -20,15 +20,15 @@ public class IpIpFindDTO {
     }
 
     public static IpIpFindDTO valueOf(String body) {
-        JSONObject jsonObject = JSON.parseObject(body);
-        if (!jsonObject.containsKey("ret")) {
+        JsonNode jsonObject = JsonUtils.parseObject(body);
+        if (null == jsonObject || !jsonObject.hasNonNull("ret")) {
             return null;
         }
 
         IpIpFindDTO ipIpFindDTO = new IpIpFindDTO();
-        ipIpFindDTO.setRet(jsonObject.getString("ret"))
-                .setMsg(jsonObject.getString("msg"))
-                .setData(IpIpFindDataDTO.valueOf(jsonObject.getString("data")));
+        ipIpFindDTO.setRet(jsonObject.get("ret").textValue())
+                .setMsg(jsonObject.get("msg").textValue())
+                .setData(IpIpFindDataDTO.valueOf(jsonObject.get("data").textValue()));
 
         return ipIpFindDTO;
     }
