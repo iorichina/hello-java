@@ -6,7 +6,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 /**
- * Created by iorihuang on 2017/5/9.
+ * Created by iorichina on 2017/5/9.
  */
 @Component
 public class HelloScheduled {

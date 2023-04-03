@@ -1,7 +1,7 @@
 package iorichina.hellojava.hellospringboot.vo;
 
 /**
- * Created by iorihuang on 2017/1/19.
+ * Created by iorichina on 2017/1/19.
  */
 public class TestVO {
     private int code;

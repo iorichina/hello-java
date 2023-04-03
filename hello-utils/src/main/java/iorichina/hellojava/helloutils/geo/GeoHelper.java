@@ -3,7 +3,7 @@ package iorichina.hellojava.helloutils.geo;
 /**
  * 校验geo信息
  * <p>
- * Created by iorihuang on 2017/1/6.
+ * Created by iorichina on 2017/1/6.
  */
 public class GeoHelper {
     /**

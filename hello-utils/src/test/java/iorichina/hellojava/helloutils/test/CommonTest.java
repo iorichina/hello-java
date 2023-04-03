@@ -1,7 +1,7 @@
 package iorichina.hellojava.helloutils.test;
 
 /**
- * Created by iorihuang on 2017/3/9.
+ * Created by iorichina on 2017/3/9.
  */
 public class CommonTest {
     public static void main(String[] args) {

@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by iorihuang on 2017/1/19.
+ * Created by iorichina on 2017/1/19.
  */
 public class HashMapTest {
     public static void main(String[] args) throws Exception {

@@ -7,7 +7,7 @@ import java.io.InputStream;
 import java.net.URL;
 
 /**
- * Created by iorihuang on 2017/1/14.
+ * Created by iorichina on 2017/1/14.
  */
 public class HttpFileUtils {
     /**

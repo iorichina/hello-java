@@ -13,7 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import javax.annotation.PostConstruct;
 
 /**
- * Created by iorihuang on 2017/5/16.
+ * Created by iorichina on 2017/5/16.
  */
 @SpringBootApplication
 @RunWith(SpringRunner.class)

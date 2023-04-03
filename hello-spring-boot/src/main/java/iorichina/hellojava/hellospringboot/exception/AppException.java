@@ -1,7 +1,7 @@
 package iorichina.hellojava.hellospringboot.exception;
 
 /**
- * Created by iorihuang on 2017/1/17.
+ * Created by iorichina on 2017/1/17.
  */
 public abstract class AppException extends Exception {
     private int code;

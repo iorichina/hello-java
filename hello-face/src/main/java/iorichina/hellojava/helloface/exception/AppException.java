@@ -3,7 +3,7 @@ package iorichina.hellojava.helloface.exception;
 import iorichina.hellojava.helloface.dto.AppCode;
 
 /**
- * Created by iorihuang on 2017/1/17.
+ * Created by iorichina on 2017/1/17.
  */
 public class AppException extends Exception {
     public int code;

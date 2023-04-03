@@ -3,7 +3,7 @@ package iorichina.hellojava.hellospringboot.test;
 import java.util.stream.Stream;
 
 /**
- * Created by iorihuang on 2017/4/28.
+ * Created by iorichina on 2017/4/28.
  */
 public class StreamTest {
     public static void main(String[] args) {

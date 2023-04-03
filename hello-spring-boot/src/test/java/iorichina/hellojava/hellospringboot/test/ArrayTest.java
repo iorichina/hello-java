@@ -6,7 +6,7 @@ import com.codahale.metrics.jvm.MemoryUsageGaugeSet;
 import org.slf4j.LoggerFactory;
 
 /**
- * Created by iorihuang on 2017/1/19.
+ * Created by iorichina on 2017/1/19.
  */
 public class ArrayTest {
     private static MetricRegistry metricRegistry = new MetricRegistry();

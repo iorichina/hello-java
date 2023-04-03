@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Created by iorihuang on 2016/12/1.
+ * Created by iorichina on 2016/12/1.
  */
 public class DateTimeFormatUtils {
     public static final String ISO_DATEFORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";

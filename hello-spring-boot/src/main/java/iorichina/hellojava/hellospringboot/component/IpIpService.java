@@ -12,7 +12,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * Created by iorihuang on 2017/1/7.
+ * Created by iorichina on 2017/1/7.
  */
 @Component
 @ConfigurationProperties(prefix = "ipip")

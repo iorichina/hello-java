@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.nio.charset.StandardCharsets;
 
 /**
- * Created by iorihuang on 2017/1/6.
+ * Created by iorichina on 2017/1/6.
  */
 public class WebResponseDto<T> {
     private int code;
