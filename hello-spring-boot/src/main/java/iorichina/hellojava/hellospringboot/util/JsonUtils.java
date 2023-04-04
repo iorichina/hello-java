@@ -113,6 +113,14 @@ public class JsonUtils {
         }
         return null;
     }
+    public static <T> T parseObject(byte[] data, TypeReference<T> toValueTypeRef) {
+        try {
+            return OBJECT_MAPPER.readValue(data, toValueTypeRef);
+        } catch (Exception e) {
+            log.error(ERROR_MESSAGE, e);
+        }
+        return null;
+    }
 
     public static JsonNode parseObject(byte[] data) {
         try {

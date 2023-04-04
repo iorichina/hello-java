@@ -15,6 +15,30 @@ import java.util.stream.Collectors;
 
 public class NetUtils {
     private static final Logger logger = LoggerFactory.getLogger(NetUtils.class);
+    private final static byte INVALID_MACS[][] = {
+            {0x00, 0x05, 0x69},             // VMWare
+            {0x00, 0x1C, 0x14},             // VMWare
+            {0x00, 0x0C, 0x29},             // VMWare
+            {0x00, 0x50, 0x56},             // VMWare
+            {0x08, 0x00, 0x27},             // Virtualbox
+            {0x0A, 0x00, 0x27},             // Virtualbox
+            {0x00, 0x03, (byte) 0xFF},       // Virtual-PC
+            {0x00, 0x15, 0x5D}              // Hyper-V
+    };
+
+    public static boolean isVMMac(byte[] mac) {
+        if (null == mac) {
+            return false;
+        }
+
+        for (byte[] invalid : INVALID_MACS) {
+            if (invalid[0] == mac[0] && invalid[1] == mac[1] && invalid[2] == mac[2]) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     public static List<String> getLocalHostAddresses() {
         List<NetworkInterface> nis;
@@ -29,13 +53,14 @@ public class NetUtils {
 
         for (NetworkInterface ni : nis) {
             try {
-                if (ni.isUp()) {
-                    addresses.addAll(
-                            Collections.list(ni.getInetAddresses())
-                                    .stream().map(InetAddress::getHostAddress)
-                                    .collect(Collectors.toList())
-                    );
+                if (!ni.isUp() || ni.isLoopback() || ni.isVirtual()) {
+                    continue;
                 }
+                addresses.addAll(
+                        Collections.list(ni.getInetAddresses())
+                                .stream().map(InetAddress::getHostAddress)
+                                .collect(Collectors.toList())
+                );
             } catch (SocketException e) {
                 logger.debug("[getLocalHostAddresses][NetworkInterface][SocketException]", e);
             }
@@ -63,9 +88,14 @@ public class NetUtils {
 
         for (NetworkInterface ni : nis) {
             try {
-                if (ni.isUp()) {
-                    addresses.addAll(Collections.list(ni.getInetAddresses()));
+                if (!ni.isUp() || ni.isLoopback() || ni.isVirtual()) {
+                    continue;
                 }
+                if (isVMMac(ni.getHardwareAddress())) {
+                    continue;
+                }
+
+                addresses.addAll(Collections.list(ni.getInetAddresses()));
             } catch (SocketException e) {
                 logger.debug("[getLocalHostAddress][NetworkInterface][SocketException]", e);
             }
