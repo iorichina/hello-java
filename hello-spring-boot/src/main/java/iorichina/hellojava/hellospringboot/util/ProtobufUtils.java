@@ -1,4 +1,4 @@
-package iorichina.hellojava.hellospringboot.helper;
+package iorichina.hellojava.hellospringboot.util;
 
 import com.google.protobuf.Message;
 import com.google.protobuf.TextFormat;
@@ -9,7 +9,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 @Slf4j
-public class ProtobufHelper {
+public class ProtobufUtils {
     static JsonJacksonFormat jacksonFormat = new JsonJacksonFormat();
 
     public static <T extends Message> String toJson(T obj) {

@@ -2,7 +2,7 @@
  * Created by iorichina 21-8-9 下午7:04
  */
 
-package iorichina.hellojava.hellospringboot.helper;
+package iorichina.hellojava.hellospringboot.util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.HttpClient;
@@ -21,7 +21,7 @@ import org.apache.thrift.transport.TTransportException;
 import java.nio.charset.StandardCharsets;
 
 @Slf4j
-public class ThriftHelper {
+public class ThriftUtils {
 
     /**
      * 输出经过简单压缩的二进制字符
