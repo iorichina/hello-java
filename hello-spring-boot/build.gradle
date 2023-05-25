@@ -27,6 +27,8 @@ dependencies {
     }
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-jetty'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-cache'
+    // https://mvnrepository.com/artifact/org.springframework.retry/spring-retry
+    implementation 'org.springframework.retry:spring-retry:1.3.4'
 
     implementation group: 'io.netty', name: 'netty-all', version: '4.1.11.Final'
     implementation group: 'org.apache.thrift', name: 'libthrift', version: '0.9.3'

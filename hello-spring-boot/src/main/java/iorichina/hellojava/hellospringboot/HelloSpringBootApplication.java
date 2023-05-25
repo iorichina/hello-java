@@ -6,10 +6,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
+import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableScheduling
 @SpringBootApplication
+@EnableRetry
 public class HelloSpringBootApplication implements EnvironmentAware {
     public static void main(String[] args) {
         SpringApplication springApplication = new SpringApplication(HelloSpringBootApplication.class);
