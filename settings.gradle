@@ -1,7 +1,7 @@
 include "hello-utils"
 include "hello-spring-boot"
 include "hello-sample"
-include "hello-face"
-include 'hello-network'
+//include "hello-face"
+//include 'hello-network'
 include 'hello-baidu'
 

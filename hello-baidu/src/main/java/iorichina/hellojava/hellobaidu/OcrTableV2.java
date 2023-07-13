@@ -10,37 +10,46 @@ import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Base64;
+import java.util.concurrent.TimeUnit;
 
+/**
+ * <a href="https://ai.baidu.com/ai-doc/OCR/Al1zvpylt">表格文字识别V2</a>
+ */
 class OcrTableV2 {
     public static final String API_KEY = "PuyGEOFnXqGM6jMGcfUnoQQy";
     public static final String SECRET_KEY = "pS3G0EGw1u3pIg2HGGdMQz5r56MREHFD";
 
-    static final OkHttpClient HTTP_CLIENT = new OkHttpClient().newBuilder().build();
+    static final OkHttpClient HTTP_CLIENT = new OkHttpClient().newBuilder().readTimeout(10L, TimeUnit.SECONDS).build();
 
     public static void main(String[] args) throws IOException {
         MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
         // pdf_file 可以通过 getFileContentAsBase64("C:\fakepath\中成药部分.pdf") 方法获取,如果Content-Type是application/x-www-form-urlencoded时,第二个参数传true
         String pdf_file = getFileContentAsBase64("D:\\Users\\iorihuang\\Desktop\\中成药部分.pdf", true);
-        RequestBody body = RequestBody.create(mediaType, "pdf_file="+pdf_file+"&return_excel=true&pdf_file_num=1");
-        Request request = new Request.Builder()
-                .url("https://aip.baidubce.com/rest/2.0/ocr/v1/table?access_token=" + getAccessToken())
-                .method("POST", body)
-                .addHeader("Content-Type", "application/x-www-form-urlencoded")
-                .addHeader("Accept", "application/json")
-                .build();
-        Response response = HTTP_CLIENT.newCall(request).execute();
-        String string = response.body().string();
-        System.out.println(string);
-
-        String excel_file = new JSONObject(string).getString("excel_file");
-        byte[] decode = Base64.getDecoder().decode(excel_file);
-        File output = new File("D:\\Users\\iorihuang\\Desktop\\中成药部分-1.xlsx");
-        if (!output.exists()) {
-            output.createNewFile();
+        String accessToken = getAccessToken();
+        for (int i = 1; i <= 5; i++) {
+            RequestBody body = RequestBody.create(mediaType, "pdf_file=" + pdf_file + "&return_excel=true&pdf_file_num=" + i);
+            Request request = new Request.Builder()
+                    .url("https://aip.baidubce.com/rest/2.0/ocr/v1/table?access_token=" + accessToken)
+                    .method("POST", body)
+                    .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                    .addHeader("Accept", "application/json")
+                    .build();
+            Response response = HTTP_CLIENT.newCall(request).execute();
+            String string = response.body().string();
+//            System.out.println(string);
+            String excel_file = new JSONObject(string).getString("excel_file");
+            System.out.println("writing page:" + i);
+            File output = new File("D:\\Users\\iorihuang\\Desktop\\中成药部分-" + i + ".xlsx");
+            if (!output.exists()) {
+                output.createNewFile();
+            }
+            FileOutputStream fos = new FileOutputStream(output);
+            byte[] decode = Base64.getDecoder().decode(excel_file);
+            fos.write(decode);
+            fos.close();
         }
-        FileOutputStream fos = new FileOutputStream(output);
-        fos.write(decode);
-        fos.close();
+        System.out.println("done");
+        //todo merge
     }
 
     /**
