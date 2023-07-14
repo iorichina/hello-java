@@ -1,15 +1,24 @@
 package iorichina.hellojava.hellobaidu;
 
 import okhttp3.*;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.util.SheetUtil;
+import org.apache.poi.util.StringUtil;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
+import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Base64;
+import java.util.Iterator;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -18,38 +27,107 @@ import java.util.concurrent.TimeUnit;
 class OcrTableV2 {
     public static final String API_KEY = "PuyGEOFnXqGM6jMGcfUnoQQy";
     public static final String SECRET_KEY = "pS3G0EGw1u3pIg2HGGdMQz5r56MREHFD";
+    static byte[] newLine = System.getProperty("line.separator").getBytes();
 
     static final OkHttpClient HTTP_CLIENT = new OkHttpClient().newBuilder().readTimeout(10L, TimeUnit.SECONDS).build();
 
     public static void main(String[] args) throws IOException {
-        MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+        new OcrTableV2().ocr();
+    }
+
+    private void ocr() throws IOException {
+        String path = "F:\\online\\biaoge\\";
         // pdf_file 可以通过 getFileContentAsBase64("C:\fakepath\中成药部分.pdf") 方法获取,如果Content-Type是application/x-www-form-urlencoded时,第二个参数传true
-        String pdf_file = getFileContentAsBase64("D:\\Users\\iorihuang\\Desktop\\中成药部分.pdf", true);
+        String pdf_file = getFileContentAsBase64(path + "中成药部分.pdf", true);
         String accessToken = getAccessToken();
-        for (int i = 1; i <= 5; i++) {
-            RequestBody body = RequestBody.create(mediaType, "pdf_file=" + pdf_file + "&return_excel=true&pdf_file_num=" + i);
-            Request request = new Request.Builder()
-                    .url("https://aip.baidubce.com/rest/2.0/ocr/v1/table?access_token=" + accessToken)
-                    .method("POST", body)
-                    .addHeader("Content-Type", "application/x-www-form-urlencoded")
-                    .addHeader("Accept", "application/json")
-                    .build();
-            Response response = HTTP_CLIENT.newCall(request).execute();
-            String string = response.body().string();
-//            System.out.println(string);
-            String excel_file = new JSONObject(string).getString("excel_file");
-            System.out.println("writing page:" + i);
-            File output = new File("D:\\Users\\iorihuang\\Desktop\\中成药部分-" + i + ".xlsx");
-            if (!output.exists()) {
-                output.createNewFile();
+        try (FileOutputStream csv = new FileOutputStream(path + "中成药部分.csv")) {
+            csv.write("药品分类代码,药品分类,药品分类等级,编号,药品名称,备注".getBytes());
+            csv.write(newLine);
+            for (int i = 1; i <= 5; i++) {
+                handlePage(path, pdf_file, i, accessToken, csv);
             }
-            FileOutputStream fos = new FileOutputStream(output);
-            byte[] decode = Base64.getDecoder().decode(excel_file);
-            fos.write(decode);
-            fos.close();
         }
         System.out.println("done");
-        //todo merge
+    }
+
+    private void handlePage(String path, String pdf_file, int pageNum, String accessToken, OutputStream csv) throws IOException {
+        MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+        RequestBody body = RequestBody.create("pdf_file=" + pdf_file + "&return_excel=true&pdf_file_num=" + pageNum, mediaType);
+        Request request = new Request.Builder()
+                .url("https://aip.baidubce.com/rest/2.0/ocr/v1/table?access_token=" + accessToken)
+                .method("POST", body)
+                .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                .addHeader("Accept", "application/json")
+                .build();
+        Response response = HTTP_CLIENT.newCall(request).execute();
+        ResponseBody responseBody = Optional.ofNullable(response).map(Response::body).orElseThrow();
+        String string = responseBody.string();
+//            System.out.println(string);
+        String excel_file = null;
+        try {
+            excel_file = new JSONObject(string).getString("excel_file");
+        } catch (JSONException e) {
+            System.out.println(string);
+            throw e;
+        }
+        System.out.println("handlePage:" + pageNum);
+
+        byte[] decode = Base64.getDecoder().decode(excel_file);
+
+        try (FileOutputStream fos = new FileOutputStream(path + "中成药部分-" + pageNum + ".xlsx")) {
+            fos.write(decode);
+
+            handlePageWorkbook(decode, csv);
+        }
+    }
+
+    String latestCode = "";
+    String latestType = "";
+
+    private void handlePageWorkbook(byte[] decode, OutputStream csv) throws IOException {
+        //excel解析
+        XSSFWorkbook wb = new XSSFWorkbook(new ByteArrayInputStream(decode));
+        Sheet sheet = wb.getSheetAt(0);
+        Iterator<Row> rowIterator = sheet.rowIterator();
+        while (rowIterator.hasNext()) {
+            Row row = rowIterator.next();
+            //药品分类代码
+            String code = HelloUtils.content(SheetUtil.getCellWithMerges(sheet, row.getRowNum(), 0));
+            if (code.contains("药品分类代码")) {
+                continue;
+            }
+            if (StringUtil.isNotBlank(code)) {
+                latestCode = code;
+            }
+
+            //药品分类
+            String type = null;
+            for (int i = 1; i <= 4; i++) {
+                type = HelloUtils.content(SheetUtil.getCellWithMerges(sheet, row.getRowNum(), i));
+                if (StringUtil.isNotBlank(type)) {
+                    latestType = type;
+                }
+            }
+            if (null != type) {
+                continue;
+            }
+
+            //药品分类等级
+            String level = HelloUtils.content(SheetUtil.getCellWithMerges(sheet, row.getRowNum(), 5));
+
+            //编号
+            String sn = HelloUtils.content(SheetUtil.getCellWithMerges(sheet, row.getRowNum(), 6));
+
+            //药品名称
+            String name = HelloUtils.content(SheetUtil.getCellWithMerges(sheet, row.getRowNum(), 7));
+
+            //备注
+            String desc = HelloUtils.content(SheetUtil.getCellWithMerges(sheet, row.getRowNum(), 8));
+
+            String line = latestCode + "," + latestType + "," + level + "," + sn + "," + name + "," + desc;
+            csv.write(line.getBytes());
+            csv.write(newLine);
+        }
     }
 
     /**
