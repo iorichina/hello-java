@@ -12,6 +12,11 @@ repositories {
     mavenCentral()
 }
 
+configurations {
+//        all*.exclude group: 'log4j', module: 'log4j'
+//        all*.exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+}
+
 dependencies {
     // https://mvnrepository.com/artifact/org.json/json
     implementation("org.json:json:20230618")

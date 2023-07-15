@@ -36,14 +36,17 @@ class OcrTableV2 {
     }
 
     private void ocr() throws IOException {
+        int pageFrom = 1, pageTo = 5;
         String path = "F:\\online\\biaoge\\";
         // pdf_file 可以通过 getFileContentAsBase64("C:\fakepath\中成药部分.pdf") 方法获取,如果Content-Type是application/x-www-form-urlencoded时,第二个参数传true
         String pdf_file = getFileContentAsBase64(path + "中成药部分.pdf", true);
         String accessToken = getAccessToken();
-        try (FileOutputStream csv = new FileOutputStream(path + "中成药部分.csv")) {
-            csv.write("药品分类代码,药品分类,药品分类等级,编号,药品名称,备注".getBytes());
+        try (FileOutputStream csv = new FileOutputStream(path + "中成药部分(" + pageFrom + "-" + pageTo + ").csv")) {
+            csv.write(("药品分类代码.x,药品分类代码.x.x,药品分类代码.x.x.x,药品分类代码.x.x.x.x," +
+                    "药品分类.x,药品分类.x.x,药品分类.x.x.x,药品分类.x.x.x.x," +
+                    "药品类别,编号,药品名称,备注").getBytes());
             csv.write(newLine);
-            for (int i = 1; i <= 5; i++) {
+            for (int i = pageFrom; i <= pageTo; i++) {
                 handlePage(path, pdf_file, i, accessToken, csv);
             }
         }
@@ -81,8 +84,8 @@ class OcrTableV2 {
         }
     }
 
-    String latestCode = "";
-    String latestType = "";
+    String[] latestCode = new String[]{"", "", "", ""};
+    String[] latestType = new String[]{"", "", "", ""};
 
     private void handlePageWorkbook(byte[] decode, OutputStream csv) throws IOException {
         //excel解析
@@ -96,23 +99,22 @@ class OcrTableV2 {
             if (code.contains("药品分类代码")) {
                 continue;
             }
-            if (StringUtil.isNotBlank(code)) {
-                latestCode = code;
-            }
 
             //药品分类
             String type = null;
             for (int i = 1; i <= 4; i++) {
                 type = HelloUtils.content(SheetUtil.getCellWithMerges(sheet, row.getRowNum(), i));
                 if (StringUtil.isNotBlank(type)) {
-                    latestType = type;
+                    latestType[i - 1] = type;
+                    latestCode[i - 1] = code;
                 }
             }
-            if (null != type) {
+
+            if (StringUtil.isNotBlank(type)) {
                 continue;
             }
 
-            //药品分类等级
+            //药品类别
             String level = HelloUtils.content(SheetUtil.getCellWithMerges(sheet, row.getRowNum(), 5));
 
             //编号
@@ -124,7 +126,19 @@ class OcrTableV2 {
             //备注
             String desc = HelloUtils.content(SheetUtil.getCellWithMerges(sheet, row.getRowNum(), 8));
 
-            String line = latestCode + "," + latestType + "," + level + "," + sn + "," + name + "," + desc;
+            if (StringUtil.isBlank(level) || StringUtil.isBlank(sn) || StringUtil.isBlank(name)) {
+                continue;
+            }
+            if (name.contains("\n") || name.contains("\r\n") || name.contains("\n\r")) {
+                name = "\"" + name + "\"";
+            }
+            if (desc.contains("\n") || desc.contains("\r\n") || desc.contains("\n\r")) {
+                desc = "\"" + desc + "\"";
+            }
+
+            String line = latestCode[0] + "," + latestCode[1] + "," + latestCode[2] + "," + latestCode[3] + ","
+                    + latestType[0] + "," + latestType[1] + "," + latestType[2] + "," + latestType[3] + ","
+                    + level + "," + sn + "," + name + "," + desc;
             csv.write(line.getBytes());
             csv.write(newLine);
         }
