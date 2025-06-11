@@ -27,6 +27,9 @@ public class ThriftUtils {
      * 输出经过简单压缩的二进制字符
      */
     public static String toCompat(TBase<?, ?> base) {
+        if (null == base) {
+            return null;
+        }
         try {
             return new TSerializer(new TCompactProtocol.Factory()).toString(base, StandardCharsets.UTF_8.displayName());//ISO_8859_1
         } catch (Exception e) {
@@ -36,6 +39,12 @@ public class ThriftUtils {
     }
 
     public static <T extends TBase<?, ?>> T fromCompat(T base, String data) {
+        if (null == base) {
+            return null;
+        }
+        if (null == data) {
+            return null;
+        }
         try {
             new TDeserializer(new TCompactProtocol.Factory()).deserialize(base, data, StandardCharsets.UTF_8.displayName());
             return base;
@@ -49,6 +58,9 @@ public class ThriftUtils {
      * 输出二进制字符
      */
     public static String toString(TBase<?, ?> base) {
+        if (null == base) {
+            return null;
+        }
         try {
             return new TSerializer().toString(base, StandardCharsets.UTF_8.displayName());//ISO_8859_1
         } catch (Exception e) {
@@ -58,6 +70,12 @@ public class ThriftUtils {
     }
 
     public static <T extends TBase<?, ?>> T fromString(T base, String data) {
+        if (null == base) {
+            return null;
+        }
+        if (null == data) {
+            return null;
+        }
         try {
             new TDeserializer().deserialize(base, data, StandardCharsets.UTF_8.displayName());
             return base;
@@ -71,6 +89,9 @@ public class ThriftUtils {
      * 输出仅thrift可读的json字符串
      */
     public static String toThriftJson(TBase<?, ?> base) {
+        if (null == base) {
+            return null;
+        }
         try {
             return new TSerializer(new TJSONProtocol.Factory()).toString(base, StandardCharsets.UTF_8.displayName());
         } catch (Exception e) {
@@ -80,6 +101,12 @@ public class ThriftUtils {
     }
 
     public static <T extends TBase<?, ?>> T fromThriftJson(T base, String data) {
+        if (null == base) {
+            return null;
+        }
+        if (null == data) {
+            return null;
+        }
         try {
             new TDeserializer(new TJSONProtocol.Factory()).deserialize(base, data, StandardCharsets.UTF_8.displayName());
             return base;
@@ -93,6 +120,9 @@ public class ThriftUtils {
      * 输出所有语言通用的json字符串
      */
     public static String toJson(TBase<?, ?> base) {
+        if (null == base) {
+            return null;
+        }
         try {
             return new TSerializer(new TSimpleJSONProtocol.Factory()).toString(base, StandardCharsets.UTF_8.displayName());
         } catch (Exception e) {

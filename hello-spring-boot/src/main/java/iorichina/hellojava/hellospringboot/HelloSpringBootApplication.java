@@ -11,7 +11,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableScheduling
 @SpringBootApplication
-@EnableRetry
+@EnableRetry(proxyTargetClass=true)
 public class HelloSpringBootApplication implements EnvironmentAware {
     public static void main(String[] args) {
         SpringApplication springApplication = new SpringApplication(HelloSpringBootApplication.class);

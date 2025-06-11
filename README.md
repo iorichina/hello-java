@@ -6,3 +6,5 @@ simple java utils
 没错你没看错，就是英文拼“错”了，咱就是简单的行聊天工具
 ## hello-sample
 刷题
+### 自动生成测试案例
+IntelJ Idea 插件 squaretest
