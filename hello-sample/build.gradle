@@ -1,8 +1,8 @@
-archivesBaseName="hello-sample"
+archivesBaseName = "hello-sample"
 
 dependencies {
     // https://mvnrepository.com/artifact/com.google.guava/guava
-    compile group: 'com.google.guava', name: 'guava', version: '27.1-jre'
+    implementation group: 'com.google.guava', name: 'guava', version: '27.1-jre'
 
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
 }

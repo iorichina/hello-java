@@ -1,4 +1,4 @@
-package iorichina.hellojava.hellosample.test.time;
+package iorichina.hellojava.hellosample.test;
 
 import com.google.common.base.Stopwatch;
 import iorichina.hellojava.hellosample.time.DateParser;

@@ -1,4 +1,7 @@
 buildscript {
+    ext {
+//        springBootVersion =
+    }
     repositories {
         maven {
             url "${mavenUrl}"
@@ -16,8 +19,8 @@ apply {
 }
 
 jar {
-    baseName = 'hello-spring-boot'
-    version = '0.0.1-SNAPSHOT'
+    archiveBaseName = 'hello-spring-boot'
+    archiveVersion = '0.0.1-SNAPSHOT'
 }
 
 dependencies {

@@ -38,7 +38,8 @@ class OcrTableV2 {
     private void ocr() throws IOException {
         int pageFrom = 1, pageTo = 5;
         String path = "F:\\online\\biaoge\\";
-        // pdf_file 可以通过 getFileContentAsBase64("C:\fakepath\中成药部分.pdf") 方法获取,如果Content-Type是application/x-www-form-urlencoded时,第二个参数传true
+        // pdf_file 可以通过 getFileContentAsBase64("C:\fakepath\中成药部分.pdf")
+        // 方法获取,如果Content-Type是application/x-www-form-urlencoded时,第二个参数传true
         String pdf_file = getFileContentAsBase64(path + "中成药部分.pdf", true);
         String accessToken = getAccessToken();
         try (FileOutputStream csv = new FileOutputStream(path + "中成药部分(" + pageFrom + "-" + pageTo + ").csv")) {
@@ -53,9 +54,11 @@ class OcrTableV2 {
         System.out.println("done");
     }
 
-    private void handlePage(String path, String pdf_file, int pageNum, String accessToken, OutputStream csv) throws IOException {
+    private void handlePage(String path, String pdf_file, int pageNum, String accessToken, OutputStream csv)
+            throws IOException {
         MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
-        RequestBody body = RequestBody.create("pdf_file=" + pdf_file + "&return_excel=true&pdf_file_num=" + pageNum, mediaType);
+        RequestBody body = RequestBody.create("pdf_file=" + pdf_file + "&return_excel=true&pdf_file_num=" + pageNum,
+                mediaType);
         Request request = new Request.Builder()
                 .url("https://aip.baidubce.com/rest/2.0/ocr/v1/table?access_token=" + accessToken)
                 .method("POST", body)
@@ -63,9 +66,10 @@ class OcrTableV2 {
                 .addHeader("Accept", "application/json")
                 .build();
         Response response = HTTP_CLIENT.newCall(request).execute();
-        ResponseBody responseBody = Optional.ofNullable(response).map(Response::body).orElseThrow();
+        ResponseBody responseBody = Optional.ofNullable(response).map(Response::body)
+                .orElseThrow(() -> new RuntimeException("233333"));
         String string = responseBody.string();
-//            System.out.println(string);
+        // System.out.println(string);
         String excel_file = null;
         try {
             excel_file = new JSONObject(string).getString("excel_file");
@@ -84,23 +88,23 @@ class OcrTableV2 {
         }
     }
 
-    String[] latestCode = new String[]{"", "", "", ""};
-    String[] latestType = new String[]{"", "", "", ""};
+    String[] latestCode = new String[] { "", "", "", "" };
+    String[] latestType = new String[] { "", "", "", "" };
 
     private void handlePageWorkbook(byte[] decode, OutputStream csv) throws IOException {
-        //excel解析
+        // excel解析
         XSSFWorkbook wb = new XSSFWorkbook(new ByteArrayInputStream(decode));
         Sheet sheet = wb.getSheetAt(0);
         Iterator<Row> rowIterator = sheet.rowIterator();
         while (rowIterator.hasNext()) {
             Row row = rowIterator.next();
-            //药品分类代码
+            // 药品分类代码
             String code = HelloUtils.content(SheetUtil.getCellWithMerges(sheet, row.getRowNum(), 0));
             if (code.contains("药品分类代码")) {
                 continue;
             }
 
-            //药品分类
+            // 药品分类
             String type = null;
             for (int i = 1; i <= 4; i++) {
                 type = HelloUtils.content(SheetUtil.getCellWithMerges(sheet, row.getRowNum(), i));
@@ -114,16 +118,16 @@ class OcrTableV2 {
                 continue;
             }
 
-            //药品类别
+            // 药品类别
             String level = HelloUtils.content(SheetUtil.getCellWithMerges(sheet, row.getRowNum(), 5));
 
-            //编号
+            // 编号
             String sn = HelloUtils.content(SheetUtil.getCellWithMerges(sheet, row.getRowNum(), 6));
 
-            //药品名称
+            // 药品名称
             String name = HelloUtils.content(SheetUtil.getCellWithMerges(sheet, row.getRowNum(), 7));
 
-            //备注
+            // 备注
             String desc = HelloUtils.content(SheetUtil.getCellWithMerges(sheet, row.getRowNum(), 8));
 
             if (StringUtil.isBlank(level) || StringUtil.isBlank(sn) || StringUtil.isBlank(name)) {
@@ -160,7 +164,6 @@ class OcrTableV2 {
         }
         return base64;
     }
-
 
     /**
      * 从用户的AK，SK生成鉴权签名（Access Token）

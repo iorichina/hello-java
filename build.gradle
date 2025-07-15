@@ -1,4 +1,3 @@
-
 buildscript {
     repositories {
         maven {
@@ -15,7 +14,8 @@ allprojects {
         plugin 'idea'
         plugin 'eclipse'
         plugin 'java'
-        plugin 'maven'
+//        plugin 'maven'//移除 after gradle 7
+        plugin 'maven-publish'
     }
 
     [compileJava, compileTestJava]*.options*.encoding = "UTF-8"
@@ -71,7 +71,8 @@ subprojects {
     }
 
     task sourcesJar(type: Jar, dependsOn: classes) {
-        classifier = 'sources'
+//        classifier = 'sources' //remove after gradle 7
+        archiveClassifier.set('sources')
         from sourceSets.main.allSource
     }
 
@@ -110,11 +111,13 @@ subprojects {
 
     task copyLib(type: Sync, dependsOn: jar) {
         from configurations.compile
-        from jar.archivePath
+//        from jar.archivePath
+        from jar.archiveFile
         into 'build/deploy'
     }
 
     task deploy(dependsOn: copyLib) {
-        println jar.archivePath
+//        println jar.archivePath
+        println jar.archiveFile
     }
 }
